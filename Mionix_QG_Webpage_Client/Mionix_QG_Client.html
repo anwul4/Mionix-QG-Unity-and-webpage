@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script src="js/FileSaver.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <script type="text/javascript">
+		 
+		var sampleNumber = 1; 
+		var data = 0;
+		var stream = false; 
+		var rec = false; 
+		var printTxt = true; 
+		
+		//ALL THE RECORDING VARIABLES FOR BOTH MOUSE AND BIOMETRICS
+		var hrTime = [];
+		var sample = [];
+		var hrState = []; 
+		var hrQuality = [];
+		var hr = []; 
+		var hrAvg = [];
+		var hrMax = [];
+		var gsr = []; 
+		
+		var rawdt = [];
+		var rawhr = []; 
+		var rawtouch = [];
+		
+		var totTime = [];
+		var totDis = [];
+		var totScroll = [];
+		var totClick = [];
+		
+		var streakT = [];
+		var streakDis = [];
+		var streakScr = [];
+		var streakClick = [];
+		
+		var speed = [];
+		var avgSpeed = [];
+		var maxSpeed = [];
+		
+		var clickRate = []; 
+		var clickRateAvg = [];
+		var clickRateMax = [];
+		
+		var scrollRate = [];
+		var scrollRateAvg = [];
+		var scrollRateMax = [];
+		
+		var triggers = [];
+		
+		//ALL THE STREAMING VARIABLES FOR BOTH MOUSE AND BIOMETRICS
+		var rtHr = 0;
+		var rtHrAvg = 0;
+		var rtHrMax = 0;
+		var rtGsr = 0; 
+		var rtHrState = 0;
+		var rtHrQuality = 0; 
+		var rtHrTime = 0;
+		var rtSample = 0; 
+		
+		var rtRawdt = 0;
+		var rtRawhr = 0; 
+		var rtRawtouch = 0;
+		
+		var rtTotTime = 0;
+		var rtTotDis = 0;
+		var rtTotScroll = 0;
+		var rtTotClick = 0;
+		
+		var rtStreakT = 0;
+		var rtStreakDis = 0;
+		var rtStreakScr = 0;
+		var rtStreakClick = 0;
+		
+		var rtSpeed = 0;
+		var rtAvgSpeed = 0;
+		var rtMaxSpeed = 0;
+		
+		var rtClickRate = 0; 
+		var rtClickRateAvg = 0;
+		var rtClickRateMax = 0;
+		
+		var rtScrollRate = 0;
+		var rtScrollRateAvg = 0;
+		var rtScrollRateMax = 0;
+		
+		function Streaming(){
+		
+		if(printTxt == true)
+		{
+		stream = true; 
+		setTimeout(StopStreaming,100); 
+		}
+		
+		}
+		
+		function Recording(){
+		rec = true; 
+		}
+		
+		function StopRecording(){
+		rec = false;
+		CreateRecordFile("RecordMionixData.txt");
+		hrTime = [];
+		sample = [];
+		hrState = []; 
+		hrQuality = [];
+		hr = []; 
+		hrAvg = [];
+		hrMax = [];
+		gsr = []; 
+		
+		rawdt = [];
+		rawhr = []; 
+		rawtouch = [];
+		
+		totTime = [];
+		totDis = [];
+		totScroll = [];
+		totClick = [];
+		speed = [];
+		avgSpeed = [];
+		maxSpeed = [];
+		clickRate = []; 
+		clickRateAvg = [];
+		clickRateMax = [];
+		scrollRate = [];
+		scrollRateAvg = [];
+		scrollRateMax = [];
+		
+		triggers = [];
+		}
+		
+		function StopStreaming(){
+		stream = false; 
+		CreateStreamFile("StreamMionixData.txt"); 
+		setTimeout(Streaming,100); 
+		}
+		
+		function StopStreamingBut(){
+		stream = false; 
+		printTxt = false; 
+		
+		rtHr = 0;
+		rtHrAvg = 0;
+		rtHrMax = 0;
+		rtGsr = 0; 
+		rtHrState = 0; 
+		rtHrQuality = 0; 
+		rtHrTime = 0;
+		rtSample = 0; 
+		
+		rtRawdt = 0;
+		rtRawhr = 0; 
+		rtRawtouch = 0;
+		
+		rtTotTime = 0;
+		rtTotDis = 0;
+		rtTotScroll = 0;
+		rtTotClick = 0;
+		rtSpeed = 0;
+		rtAvgSpeed = 0;
+		rtMaxSpeed = 0;
+		rtClickRate = 0; 
+		rtClickRateAvg = 0;
+		rtClickRateMax = 0;
+		rtScrollRate = 0;
+		rtScrollRateAvg = 0;
+		rtScrollRateMax = 0;
+		
+		setTimeout(enableStream,500) 
+		}
+		function enableStream()
+		{
+		printTxt = true;
+		}
+		function SetTrigger()
+		{
+		triggers.push(document.getElementById("Triggerinput").value)
+		}
+		function SetTrigger1()
+		{
+		triggers.push(1)
+		}
+		function SetTrigger2()
+		{
+		triggers.push(2)
+		}
+		function SetTrigger3()
+		{
+		triggers.push(3)
+		}
+		function SetTrigger4()
+		{
+		triggers.push(4)
+		}
+		function SetTrigger5()
+		{
+		triggers.push(5)
+		}
+		function SetTrigger6()
+		{
+		triggers.push(6)
+		}
+		// in case you have added another trigger button just write the new function for the trigger here. 
+		// 
+		function CreateStreamFile(name){
+		var blob = new Blob([
+		"BIOMETRICS"
+		+"\nHeart rate state:, " + rtHrState
+		+"\nTime (h:m:s:ms):, " + rtHrTime 
+		+ "\nSample Number:," + rtSample 
+		+ "\nLive Heart Rate:, " + rtHr 
+		+ "\nAverage Heart Rate:, " + rtHrAvg 
+		+ "\nMax Heart Rate:, " + rtHrMax 
+		+"\n GSR:, " + rtGsr
+		+ "\n RAW BIOMETRICS"
+		+ "\nTime since Last Sample:, " + rtRawdt
+		+ "\nRaw Heart Rate:, "+ rtRawhr
+		+ "\nRaw Touch:, " + rtRawtouch
+		+ "\nMOUSEMETRICS" 
+		+ "\nTime Since Factory Reset:, " + rtTotTime
+		+ "\nDistance Since Factory Reset:, " + rtTotDis
+		+ "\nNumber of step scrolled since fac reset:, " + rtTotScroll
+		+ "\nNumber of Clicks since Factory reset:, " + rtTotClick
+		+ "\nStreak Time:, " + rtStreakT
+		+ "\nStreak Distance:, " + rtStreakDis
+		+ "\nStreak Scrolls:, " + rtStreakScr
+		+ "\nStreak Clicks:, " + rtStreakClick
+		+ "\nMouse Move Speed:, " + rtSpeed
+		+ "\nMouse Avg Speed:, " + rtAvgSpeed
+		+ "\nMouse Max Speed:, " + rtMaxSpeed
+		+ "\nClick Rate Live:, " + rtClickRate
+		+ "\nClick Rate Avg:, " + rtClickRateAvg
+		+ "\nclick Rate Max:, " + rtClickRateMax
+		+ "\nScroll Rate Live:, " + rtScrollRate
+		+ "\nScroll Rate Avg:, " + rtScrollRateAvg
+		+ "\nScroll Rate Max:, " + rtScrollRateMax
+		], {type: "text/plain;charset=utf-8"});
+		saveAs(blob,name,true); 
+		}
+		
+		function CreateRecordFile(name){
+		var blob = new Blob([
+		"BIOMETRICS"
+		+"\nHeart rate state: " + hrState[hrState.length-1]
+		+"\nTime (h:m:s:ms):, " + hrTime 
+		+ "\nSample Number:," + sample 
+		+ "\nLive Heart Rate:, " + hr 
+		+ "\nAverage Heart Rate:, " + hrAvg 
+		+ "\nMax Heart Rate:, " + hrMax 
+		+"\n GSR:, " + gsr
+		+ "\n RAW BIOMETRICS"
+		+ "\nTime since Last Sample:, " + rawdt
+		+ "\nRaw Heart Rate:, "+ rawhr
+		+ "\nRaw Touch:, " + rawtouch
+		+ "\nMOUSEMETRICS" 
+		+ "\nTime Since Factory Reset:, " + totTime
+		+ "\nDistance Since Factory Reset:, " + totDis
+		+ "\nNumber of step scrolled since fac reset:, " + totScroll
+		+ "\nNumber of Clicks since Factory reset:, " + totClick
+		+ "\nStreak Time:, " + streakT
+		+ "\nStreak Distance:, " + streakDis
+		+ "\nStreak Scrolls:, " + streakScr
+		+ "\nStreak Clicks:, " + streakClick
+		+ "\nMouse Move Speed:, " + speed
+		+ "\nMouse Avg Speed:, " + avgSpeed
+		+ "\nMouse Max Speed:, " + maxSpeed
+		+ "\nClick Rate Live:, " + clickRate
+		+ "\nClick Rate Avg:, " + clickRateAvg
+		+ "\nclick Rate Max:, " + clickRateMax
+		+ "\nScroll Rate Live:, " + scrollRate
+		+ "\nScroll Rate Avg:, " + scrollRateAvg
+		+ "\nScroll Rate Max:, " + scrollRateMax
+		+ "\nTRIGGERS"
+		+ "\n Triggers:," + triggers
+		], {type: "text/plain;charset=utf-8"});
+		saveAs(blob,name,true); 
+		}
+		
+		
+            $(function() {
+                var WebSocket = window.WebSocket || window.MozWebSocket;
+                var mionixSocket = new WebSocket("ws://localhost:7681", "mionix-beta");
+
+                mionixSocket.onopen = function () {
+                  $("#connectLabel").addClass("label-success");
+                  $("#connectLabel").text("Connected");
+                  mionixSocket.send(JSON.stringify({ type: 'getDevices' }));
+                };
+
+                mionixSocket.onerror = function () {
+                  $("#connectLabel").addClass("label-danger");
+                  $("#connectLabel").text("Not connected");
+                };
+
+                mionixSocket.onmessage = function (message) {
+                  data = JSON.parse(message.data);
+
+                  if (data.type == "devices" || data.type == "deviceChanged")
+                    $("#devicesInfo").html(JSON.stringify(data, null, 2));
+                  else if (data.type == "mouseMetrics")
+			{
+                    $("#mouseMetrics").html(JSON.stringify(data, null, 2));
+				if(stream == true)
+					{
+					rtTotTime = data.totalTime;
+					rtTotDis = data.totalDistance; 
+					rtTotScroll = data.totalScrolls;
+					rtTotClick = data.totalClicks;
+					
+					rtStreakClick = data.streakClicks;
+					rtStreakT = data.streakTime;
+					rtStreakDis = data.streakDistance;
+					rtStreakScr = data.streakScrolls;
+
+					rtSpeed = data.speed; 
+					rtAvgSpeed = data.speedAvg;
+					rtMaxSpeed = data.speedMax;
+					
+					rtClickRate = data.clickRate;
+					rtClickRateAvg = data.clickRateAvg;
+					rtClickRateMax = data.clickRateMax; 
+
+					rtScrollRate = data.scrollRate; 
+					rtScrollRateAvg = data.scrollRateAvg; 
+					rtScrollRateMax = data.scrollRateMax;
+					}
+				if(rec == true)
+					{
+					totTime.push(data.totalTime);
+					totDis.push(data.totalDistance);
+					totScroll.push(data.totalScrolls);
+					totClick.push(data.totalClicks);
+					
+					streakT.push(data.streakTime);
+					streakDis.push(data.streakDistance);
+					streakClick.push(data.streakClicks);
+					streakScr.push(data.streakScrolls);
+					
+					speed.push(data.speed);
+					avgSpeed.push(data.speedAvg);
+					maxSpeed.push(data.speedMax);
+					
+					clickRate.push(data.clickRate); 
+					clickRateAvg.push(data.clickRateAvg);
+					clickRateMax.push(data.clickRateMax);
+					
+					scrollRate.push(data.scrollRate);
+					scrollRateAvg.push(data.scrollRateAvg);
+					scrollRateMax.push(data.scrollRateMax);
+			
+					triggers.push(0);
+					}
+
+			}
+                  else if (data.type == "bioMetrics")
+			{
+                    $("#bioMetrics").html(JSON.stringify(data, null, 2));
+			if(stream == true)
+			{
+			rtHrState = data.heartRateState;
+			rtHr = data.heartRate;
+			rtGsr = data.gsr; 
+			rtHrAvg = data.heartRateAvg;
+			rtHrMax = data.heartRateMax;
+			rtSample = sampleNumber;
+			var d = new Date();
+			rtHrTime = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds() + ":" + d.getMilliseconds();
+			}
+			
+			
+			if(rec == true)
+			{
+			
+			hrState.push(data.heartRateState);
+			hrQuality.push(data.heartRateQuality);
+			hr.push(data.heartRate);
+			hrAvg.push(data.heartRateAvg);
+			hrMax.push(data.heartRateMax); 
+			gsr.push(data.gsr); 
+			sample.push(sampleNumber);
+			sampleNumber = sampleNumber+1; 
+			var d = new Date();
+			hrTime.push(d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds() + ":" + d.getMilliseconds());
+
+			}
+			}
+                  else if (data.type == "bioRaw")
+			{
+                    $("#bioRaw").html(JSON.stringify(data, null, 2));
+				if(stream == true)
+					{
+					rtRawdt = data.dt;
+					rtRawhr = data.heartRate;
+					rtRawtouch = data.touch;
+					}
+					
+					if(rec == true)
+					{
+					rawdt.push(data.dt);
+					rawhr.push(data.heartRate); 
+					rawtouch.push(data.touch);
+					}
+
+			}
+			
+                };
+		
+			
+	
+		 
+
+            });
+
+        </script>
+        </head>
+    <body >
+      <div style="max-width: 65rem; margin: auto;">
+	  
+	  <h2>Buttons for streaming bio and mouse metrics to your computer</h2>
+	  <p>All the data will be streamed to a local file in your download folder</p>
+	  <p>They only contain one sample of data and will not be suited for offline analysis</p>
+	  <p>If the browser supports it please install this <a href="https://chrome.google.com/webstore/detail/downloads-overwrite-exist/fkomnceojfhfkgjgcijfahmgeljomcfk">plugin</a> to avoid a huge clutter of files stating name(n)</p>
+	  <input id="Start Stream Button" type="button" value="Start Stream Button" onclick="Streaming();" />
+	  <input id="Stop Stream Button" type="button" value="Stop Stream Button" onclick="StopStreamingBut();" />
+	  
+	  <h2>Buttons for recording bio and mouse metrics</h2>
+	  <p>The infomation will be stored locally in your download folder. Remember to rename them after each recording. If you forget to do that the previous recordint will be overwritten due to the installed plugin. </p>
+	  <P> These files are purely for offline analysis and is not downloaded until you press the "stop recording" button </p>
+	  <input id="Start Recording Button" type="button" value="Start Recording Button" onclick="Recording();" />
+	  <input id="Stop Recording Button" type="button" value="Stop Recording Button" onclick="StopRecording();" />
+	  <h2>Add triggers to the recordings</h2>
+	  <p>below you can add triggers to the recording stream. Simply type either select one of the number buttons or type a trigger number in the text field below and press the add custom trigger button when you want to add a trigger into the recordings</p>
+	  <input id="add1trig" type="button" value="1" onclick="SetTrigger1();" />
+	  <input id="add2trig" type="button" value="2" onclick="SetTrigger2();" />
+	  <input id="add3trig" type="button" value="3" onclick="SetTrigger3();" />
+	  <input id="add4trig" type="button" value="4" onclick="SetTrigger4();" />
+	  <input id="add5trig" type="button" value="5" onclick="SetTrigger5();" />
+	  <input id="add6trig" type="button" value="6" onclick="SetTrigger6();" />
+	  <!--in case you want to add more triggers just add one more of the lines above with the new trigger you want -->
+	  <P>  </p>
+	  <input id="Triggerinput" type="textarea" value=" "/>
+	  <input id="GetTriggerBut" type="button" value="Add Custom Trigger" onclick="SetTrigger();"/>
+		<P>  </p>
+        <div class="panel panel-success">
+          <div class="panel-heading"><span class="badge">Live</span> Connection Demo </div>
+          <div class="panel-body">
+            <span id="connectLabel" class="label label-default">Connecting</span>
+          </div>
+        </div>
+
+        <li> <code>heartRateState</code> the current state of the heart rate sensor. </li>
+        <li> <code>heartRate</code> the current heart beats per minute. </li>
+        <li> <code>heartRateQuality</code> the quality of the current measurement in percentage. </li>
+        <li> <code>heartRateAvg</code> the average heart beats per minute since a few seconds. </li>
+        <li> <code>heartRateMax</code> the maximum heart beats per minute since a few seconds. </li>
+        </ul>
+
+        <li> <code>dt</code> times in ms since laste sample.</li>
+        <li> <code>heartRate</code> reflective value from the sensor.</li>
+        <li> <code>touch</code> indicates hand on or off.</li>
+        </ul>
+
+        <ul>
+        <li> <code>totalTime</code> the time the mouse has been active since factory reset. </li>
+        <li> <code>totalDistance</code> the distance moved since factory reset. </li>
+        <li> <code>totalScrolls</code> the number of steps scrolled since factory reset. </li>
+        <li> <code>totalClicks</code> the number of clicks since factory reset. </li>
+        <br>
+        <li> <code>streakTime</code> the time the mouse has been active during the last continuous gesture. </li>
+        <li> <code>streakDistance</code> the distance moved (in millimeters) during the last continuous gesture. </li>
+        <li> <code>streakScrolls</code> the number of steps scrolled during the last continuous gesture. </li>
+        <li> <code>streakClicks</code> the number of clicks during the last continuous gesture. </li>
+        <br>
+        <li> <code>speed</code> The current movement speed of the mouse. </li>
+        <li> <code>speedAvg</code> The average movement speed since a few seconds. </li>
+        <li> <code>speedMax</code> The maximum movement speed since a few seconds. </li>
+        <li> <code>clickRate</code> The current click rate of the mouse. </li>
+        <li> <code>clickRateAvg</code> The average movement click rate since a few seconds. </li>
+        <li> <code>clickRateMax</code> The maximum movement click rate since a few seconds. </li>
+        <li> <code>scrollRate</code> The current scroll rate of the mouse. </li>
+        <li> <code>scrollRateAvg</code> The average movement scroll rate since a few seconds. </li>
+        <li> <code>scrollRateMax</code> The maximum movement scroll rate since a few seconds. </li>
+        </ul>
+
+        <div class="panel panel-success">
+          <div class="panel-heading"><span class="badge">Live</span> Mouse Metrics Demo </div>
+          <div class="panel-body">
+            <pre id="bioMetrics"></pre>
+            <pre id="bioRaw"></pre>
+            <pre id="mouseMetrics"></pre>
+          </div>
+        </div>
+
+      </div>
+    </body>
+</html>
