@@ -4,7 +4,7 @@ using UnityEngine;
 using System.IO; 
 
 public class txtStreamReader : MonoBehaviour {
-	
+	// the Filepath should ofcourse be changed to where your download folder is placed
 	private string filePath = "C:\\Users\\wulff\\Downloads\\";
 	private string fileName = "StreamMionixData.txt";
 	private float readTimeOut = 0.0f; 
